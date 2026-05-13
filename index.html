@@ -84,6 +84,43 @@
     color: var(--muted); letter-spacing: 1px; margin-top: 2px;
   }
 
+  /* ── MÉTÉO HEADER ── */
+  .weather-block {
+    display: flex; align-items: center; gap: 20px;
+    padding: 0 20px;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    height: 100%;
+  }
+  .weather-today {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+  }
+  .weather-today-temp {
+    font-family: var(--mono); font-size: 22px; font-weight: 600; color: #fff;
+  }
+  .weather-today-icon { font-size: 22px; line-height: 1; }
+  .weather-today-label {
+    font-family: var(--mono); font-size: 9px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase; text-align: center;
+  }
+  .weather-sep { width: 1px; height: 36px; background: var(--border); }
+  .weather-forecast {
+    display: flex; gap: 14px; align-items: center;
+  }
+  .weather-day {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .weather-day-label {
+    font-family: var(--mono); font-size: 9px; color: var(--muted);
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .weather-day-icon { font-size: 18px; line-height: 1; }
+  .weather-day-temps {
+    font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+  }
+  .weather-day-temps span { color: #fff; font-weight: 600; }
+
   /* ── SLIDES ── */
   .slides { flex: 1; position: relative; overflow: hidden; }
 
@@ -281,6 +318,15 @@
       </div>
     </div>
     <div class="header-right">
+      <div class="weather-block" id="weatherBlock" style="display:none;">
+        <div class="weather-today">
+          <div class="weather-today-icon" id="wTodayIcon">—</div>
+          <div class="weather-today-temp" id="wTodayTemp">—°</div>
+          <div class="weather-today-label">Saint-Priest</div>
+        </div>
+        <div class="weather-sep"></div>
+        <div class="weather-forecast" id="wForecast"></div>
+      </div>
       <div class="dots" id="dots"></div>
       <div class="clock">
         <div class="clock-time" id="clockTime">--:--:--</div>
@@ -693,11 +739,93 @@ function startNews() {
 }
 
 // ═══════════════════════════════════════════════════════════
+// MÉTÉO — Open-Meteo (gratuit, sans clé API)
+// Saint-Priest, France : lat=45.6953, lon=4.9444
+// ═══════════════════════════════════════════════════════════
+const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
+  + '?latitude=45.6953&longitude=4.9444'
+  + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
+  + '&current_weather=true'
+  + '&timezone=Europe%2FParis'
+  + '&forecast_days=4';
+
+function weatherIcon(code) {
+  if (code === 0)           return '☀️';
+  if (code <= 2)            return '🌤️';
+  if (code <= 3)            return '☁️';
+  if (code <= 48)           return '🌫️';
+  if (code <= 57)           return '🌦️';
+  if (code <= 67)           return '🌧️';
+  if (code <= 77)           return '🌨️';
+  if (code <= 82)           return '🌧️';
+  if (code <= 86)           return '❄️';
+  if (code <= 99)           return '⛈️';
+  return '🌡️';
+}
+
+function weatherLabel(code) {
+  if (code === 0)  return 'Ciel dégagé';
+  if (code <= 2)   return 'Peu nuageux';
+  if (code <= 3)   return 'Couvert';
+  if (code <= 48)  return 'Brouillard';
+  if (code <= 57)  return 'Bruine';
+  if (code <= 67)  return 'Pluie';
+  if (code <= 77)  return 'Neige';
+  if (code <= 82)  return 'Averses';
+  if (code <= 86)  return 'Neige forte';
+  if (code <= 99)  return 'Orage';
+  return '—';
+}
+
+const DAY_NAMES = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+
+async function loadWeather() {
+  try {
+    const res = await fetch(WEATHER_URL);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    const cur = data.current_weather;
+    const daily = data.daily;
+
+    // Aujourd'hui
+    document.getElementById('wTodayTemp').textContent = Math.round(cur.temperature) + '°';
+    document.getElementById('wTodayIcon').textContent = weatherIcon(cur.weathercode);
+
+    // 3 jours suivants (index 1, 2, 3)
+    const forecast = document.getElementById('wForecast');
+    forecast.innerHTML = '';
+    for (let i = 1; i <= 3; i++) {
+      const date = new Date(daily.time[i] + 'T12:00:00');
+      const dayName = DAY_NAMES[date.getDay()];
+      const icon = weatherIcon(daily.weathercode[i]);
+      const tmax = Math.round(daily.temperature_2m_max[i]);
+      const tmin = Math.round(daily.temperature_2m_min[i]);
+      forecast.innerHTML += `
+        <div class="weather-day">
+          <div class="weather-day-label">${dayName}</div>
+          <div class="weather-day-icon">${icon}</div>
+          <div class="weather-day-temps"><span>${tmax}°</span> / ${tmin}°</div>
+        </div>`;
+      if (i < 3) forecast.innerHTML += `<div class="weather-sep" style="height:28px;"></div>`;
+    }
+
+    document.getElementById('weatherBlock').style.display = 'flex';
+
+    // Rafraîchissement toutes les 30 minutes
+    setTimeout(loadWeather, 30 * 60 * 1000);
+  } catch {
+    // Silencieux — l'encart reste masqué si l'API échoue
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
 (async () => {
   await loadMetrics();
   await loadNews();
+  loadWeather();
   startCarousel();
 })();
 </script>
