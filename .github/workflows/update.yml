@@ -1,0 +1,47 @@
+name: Update Dashboard Data
+
+on:
+  schedule:
+    - cron: '0 6 * * 1-5'   # Lundi-Vendredi à 6h UTC (8h Paris)
+  workflow_dispatch:          # Déclenchement manuel possible
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install feedparser requests
+
+      - name: Fetch RSS news
+        run: python scripts/fetch_news.py
+
+      # ─── OPTION A : Mise à jour manuelle du JSON ───────────────────────────
+      # Décommentez cette étape et commentez l'étape "Fetch from VSA API"
+      # pour mettre à jour les métriques manuellement en éditant data/metrics.json
+      # ────────────────────────────────────────────────────────────────────────
+
+      # ─── OPTION B : Fetch automatique depuis l'API VSA ─────────────────────
+      # Décommentez quand vous avez l'API key VSA
+      # - name: Fetch from VSA API
+      #   env:
+      #     VSA_API_KEY: ${{ secrets.VSA_API_KEY }}
+      #     VSA_API_URL: ${{ secrets.VSA_API_URL }}
+      #   run: python scripts/fetch_vsa.py
+      # ────────────────────────────────────────────────────────────────────────
+
+      - name: Commit and push
+        run: |
+          git config user.name  "dashboard-bot"
+          git config user.email "bot@treffle-automation.fr"
+          git add data/news.json
+          git diff --staged --quiet || git commit -m "chore: update data $(date +'%Y-%m-%d %H:%M')"
+          git push
