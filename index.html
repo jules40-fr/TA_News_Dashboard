@@ -739,83 +739,66 @@ function startNews() {
 }
 
 // ═══════════════════════════════════════════════════════════
-// MÉTÉO — Open-Meteo (gratuit, sans clé API)
+// MÉTÉO — Open-Meteo (gratuit, sans clé API, CORS natif)
 // Saint-Priest, France : lat=45.6953, lon=4.9444
 // ═══════════════════════════════════════════════════════════
-const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast'
-  + '?latitude=45.6953&longitude=4.9444'
-  + '&daily=weathercode,temperature_2m_max,temperature_2m_min'
-  + '&current_weather=true'
-  + '&timezone=Europe%2FParis'
-  + '&forecast_days=4';
+const WEATHER_URL = 'https://api.open-meteo.com/v1/forecast?latitude=45.6953&longitude=4.9444&daily=weathercode,temperature_2m_max,temperature_2m_min&current_weather=true&timezone=Europe%2FParis&forecast_days=4';
 
 function weatherIcon(code) {
-  if (code === 0)           return '☀️';
-  if (code <= 2)            return '🌤️';
-  if (code <= 3)            return '☁️';
-  if (code <= 48)           return '🌫️';
-  if (code <= 57)           return '🌦️';
-  if (code <= 67)           return '🌧️';
-  if (code <= 77)           return '🌨️';
-  if (code <= 82)           return '🌧️';
-  if (code <= 86)           return '❄️';
-  if (code <= 99)           return '⛈️';
+  if (code === 0)  return '☀️';
+  if (code <= 2)   return '🌤️';
+  if (code <= 3)   return '☁️';
+  if (code <= 48)  return '🌫️';
+  if (code <= 57)  return '🌦️';
+  if (code <= 67)  return '🌧️';
+  if (code <= 77)  return '🌨️';
+  if (code <= 82)  return '🌧️';
+  if (code <= 86)  return '❄️';
+  if (code <= 99)  return '⛈️';
   return '🌡️';
-}
-
-function weatherLabel(code) {
-  if (code === 0)  return 'Ciel dégagé';
-  if (code <= 2)   return 'Peu nuageux';
-  if (code <= 3)   return 'Couvert';
-  if (code <= 48)  return 'Brouillard';
-  if (code <= 57)  return 'Bruine';
-  if (code <= 67)  return 'Pluie';
-  if (code <= 77)  return 'Neige';
-  if (code <= 82)  return 'Averses';
-  if (code <= 86)  return 'Neige forte';
-  if (code <= 99)  return 'Orage';
-  return '—';
 }
 
 const DAY_NAMES = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 
 async function loadWeather() {
   try {
-    const res = await fetch(WEATHER_URL);
-    if (!res.ok) throw new Error();
+    const res = await fetch(WEATHER_URL, { mode: 'cors' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
 
     const cur = data.current_weather;
     const daily = data.daily;
 
+    if (!cur || !daily) throw new Error('structure inattendue');
+
     // Aujourd'hui
     document.getElementById('wTodayTemp').textContent = Math.round(cur.temperature) + '°';
-    document.getElementById('wTodayIcon').textContent = weatherIcon(cur.weathercode);
+    document.getElementById('wTodayIcon').textContent = weatherIcon(Math.round(cur.weathercode));
 
-    // 3 jours suivants (index 1, 2, 3)
+    // 3 jours suivants
     const forecast = document.getElementById('wForecast');
     forecast.innerHTML = '';
     for (let i = 1; i <= 3; i++) {
       const date = new Date(daily.time[i] + 'T12:00:00');
       const dayName = DAY_NAMES[date.getDay()];
-      const icon = weatherIcon(daily.weathercode[i]);
+      const icon = weatherIcon(Math.round(daily.weathercode[i]));
       const tmax = Math.round(daily.temperature_2m_max[i]);
       const tmin = Math.round(daily.temperature_2m_min[i]);
-      forecast.innerHTML += `
-        <div class="weather-day">
-          <div class="weather-day-label">${dayName}</div>
-          <div class="weather-day-icon">${icon}</div>
-          <div class="weather-day-temps"><span>${tmax}°</span> / ${tmin}°</div>
-        </div>`;
-      if (i < 3) forecast.innerHTML += `<div class="weather-sep" style="height:28px;"></div>`;
+      forecast.innerHTML += `<div class="weather-day">
+        <div class="weather-day-label">${dayName}</div>
+        <div class="weather-day-icon">${icon}</div>
+        <div class="weather-day-temps"><span>${tmax}°</span>&nbsp;/&nbsp;${tmin}°</div>
+      </div>`;
+      if (i < 3) forecast.innerHTML += `<div class="weather-sep" style="height:28px;margin:0 4px;"></div>`;
     }
 
     document.getElementById('weatherBlock').style.display = 'flex';
-
-    // Rafraîchissement toutes les 30 minutes
     setTimeout(loadWeather, 30 * 60 * 1000);
-  } catch {
-    // Silencieux — l'encart reste masqué si l'API échoue
+
+  } catch(e) {
+    console.warn('Météo indisponible :', e.message);
+    // Réessai dans 2 minutes si échec
+    setTimeout(loadWeather, 2 * 60 * 1000);
   }
 }
 
