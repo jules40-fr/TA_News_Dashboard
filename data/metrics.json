@@ -5,26 +5,160 @@
   "ca_trend_pct": "+18,4 %",
   "ca_trend_label": "Même période janvier → mai",
   "ca_n1_mensuel": [98, 112, 87, 134, 156, 143, 168, 155, 172, 189, 201, 178],
-  "ca_n_mensuel":  [118, 136, 105, 158, 191, null, null, null, null, null, null, null],
+  "ca_n_mensuel": [118, 136, 105, 158, 191, null, null, null, null, null, null, null],
   "consultants": 31,
   "sourcing": 7,
   "fins_de_mission": 3,
   "taux_occupation": "81%",
   "anniversaires": [
-    { "initiales": "ML", "nom": "Martin L.",  "role": "Automaticien",    "client": "Orano",         "date": "14 mai", "age": 32, "color": "#1A56DB", "colorbg": "rgba(26,86,219,0.2)"  },
-    { "initiales": "SB", "nom": "Sophie B.",  "role": "Ingénieure EIA",  "client": "Framatome",     "date": "19 mai", "age": 28, "color": "#10b959", "colorbg": "rgba(16,185,89,0.2)"  },
-    { "initiales": "RK", "nom": "Romain K.",  "role": "Chef de projet",  "client": "Naval Group",   "date": "27 mai", "age": 41, "color": "#a855f7", "colorbg": "rgba(168,85,247,0.2)" },
-    { "initiales": "AC", "nom": "Alice C.",   "role": "Instrumentiste",  "client": "TotalEnergies", "date": "31 mai", "age": 35, "color": "#f59e0b", "colorbg": "rgba(245,158,11,0.2)" }
+    {
+      "initiales": "ML",
+      "nom": "Martin L.",
+      "role": "Automaticien",
+      "client": "Orano",
+      "date": "14 mai",
+      "age": 32,
+      "color": "#1A56DB",
+      "colorbg": "rgba(26,86,219,0.2)"
+    },
+    {
+      "initiales": "SB",
+      "nom": "Sophie B.",
+      "role": "Ingénieure EIA",
+      "client": "Framatome",
+      "date": "19 mai",
+      "age": 28,
+      "color": "#10b959",
+      "colorbg": "rgba(16,185,89,0.2)"
+    },
+    {
+      "initiales": "RK",
+      "nom": "Romain K.",
+      "role": "Chef de projet",
+      "client": "Naval Group",
+      "date": "27 mai",
+      "age": 41,
+      "color": "#a855f7",
+      "colorbg": "rgba(168,85,247,0.2)"
+    },
+    {
+      "initiales": "AC",
+      "nom": "Alice C.",
+      "role": "Instrumentiste",
+      "client": "TotalEnergies",
+      "date": "31 mai",
+      "age": 35,
+      "color": "#f59e0b",
+      "colorbg": "rgba(245,158,11,0.2)"
+    }
   ],
   "opportunites": [
-    { "client": "Orano Projets",     "poste": "Ingénieur Contrôle-Commande",  "statut": "qualif", "statut_label": "QUALIFICATION", "lieu": "Paris",          "region": "Île-de-France",         "color": "#1A56DB" },
-    { "client": "Framatome",         "poste": "Automaticien Siemens S7",      "statut": "nego",   "statut_label": "NÉGOCIATION",   "lieu": "Lyon",           "region": "Auvergne-Rhône-Alpes",  "color": "#10b959" },
-    { "client": "TotalEnergies",     "poste": "Ingénieur EIA",                "statut": "prop",   "statut_label": "PROPOSITION",   "lieu": "Lacq",           "region": "Nouvelle-Aquitaine",    "color": "#f59e0b" },
-    { "client": "Schneider Electric","poste": "Chef de projet automation",    "statut": "qualif", "statut_label": "QUALIFICATION", "lieu": "Grenoble",       "region": "Auvergne-Rhône-Alpes",  "color": "#a855f7" },
-    { "client": "EDF CNPE",          "poste": "Ingénieur sûreté nucléaire",   "statut": "nego",   "statut_label": "NÉGOCIATION",   "lieu": "Flamanville",    "region": "Normandie",             "color": "#ef4444" },
-    { "client": "Sanofi",            "poste": "Automaticien pharma MES",      "statut": "prop",   "statut_label": "PROPOSITION",   "lieu": "Vitry-sur-Seine","region": "Île-de-France",         "color": "#06b6d4" },
-    { "client": "Naval Group",       "poste": "Électricien naval",            "statut": "qualif", "statut_label": "QUALIFICATION", "lieu": "Cherbourg",      "region": "Normandie",             "color": "#f97316" },
-    { "client": "Arkema",            "poste": "Ingénieur procédés chimiques", "statut": "nego",   "statut_label": "NÉGOCIATION",   "lieu": "Lacq",           "region": "Nouvelle-Aquitaine",    "color": "#14b8a6" },
-    { "client": "Airbus DS",         "poste": "Ingénieur systèmes embarqués", "statut": "prop",   "statut_label": "PROPOSITION",   "lieu": "Toulouse",       "region": "Occitanie",             "color": "#8b5cf6" }
-  ]
+    {
+      "client": "Orano Projets",
+      "poste": "Ingénieur Contrôle-Commande",
+      "statut": "qualif",
+      "statut_label": "QUALIFICATION",
+      "lieu": "Paris",
+      "region": "Île-de-France",
+      "color": "#1A56DB"
+    },
+    {
+      "client": "Framatome",
+      "poste": "Automaticien Siemens S7",
+      "statut": "nego",
+      "statut_label": "NÉGOCIATION",
+      "lieu": "Lyon",
+      "region": "Auvergne-Rhône-Alpes",
+      "color": "#10b959"
+    },
+    {
+      "client": "TotalEnergies",
+      "poste": "Ingénieur EIA",
+      "statut": "prop",
+      "statut_label": "PROPOSITION",
+      "lieu": "Lacq",
+      "region": "Nouvelle-Aquitaine",
+      "color": "#f59e0b"
+    },
+    {
+      "client": "Schneider Electric",
+      "poste": "Chef de projet automation",
+      "statut": "qualif",
+      "statut_label": "QUALIFICATION",
+      "lieu": "Grenoble",
+      "region": "Auvergne-Rhône-Alpes",
+      "color": "#a855f7"
+    },
+    {
+      "client": "EDF CNPE",
+      "poste": "Ingénieur sûreté nucléaire",
+      "statut": "nego",
+      "statut_label": "NÉGOCIATION",
+      "lieu": "Flamanville",
+      "region": "Normandie",
+      "color": "#ef4444"
+    },
+    {
+      "client": "Sanofi",
+      "poste": "Automaticien pharma MES",
+      "statut": "prop",
+      "statut_label": "PROPOSITION",
+      "lieu": "Vitry-sur-Seine",
+      "region": "Île-de-France",
+      "color": "#06b6d4"
+    },
+    {
+      "client": "Naval Group",
+      "poste": "Électricien naval",
+      "statut": "qualif",
+      "statut_label": "QUALIFICATION",
+      "lieu": "Cherbourg",
+      "region": "Normandie",
+      "color": "#f97316"
+    },
+    {
+      "client": "Arkema",
+      "poste": "Ingénieur procédés chimiques",
+      "statut": "nego",
+      "statut_label": "NÉGOCIATION",
+      "lieu": "Lacq",
+      "region": "Nouvelle-Aquitaine",
+      "color": "#14b8a6"
+    },
+    {
+      "client": "Airbus DS",
+      "poste": "Ingénieur systèmes embarqués",
+      "statut": "prop",
+      "statut_label": "PROPOSITION",
+      "lieu": "Toulouse",
+      "region": "Occitanie",
+      "color": "#8b5cf6"
+    }
+  ],
+  "qhse": {
+    "jours_sans_accident": 128,
+    "dernier_accident": "06 janvier 2026",
+    "audits_realises": 14,
+    "audits_a_faire": 20,
+    "causeries": [
+      {
+        "sujet": "Consignation électrique et absence de tension",
+        "animateur": "Référent sécurité",
+        "date": "10 mai",
+        "color": "#1A56DB"
+      },
+      {
+        "sujet": "Port des EPI en intervention client",
+        "animateur": "QHSE",
+        "date": "03 mai",
+        "color": "#10b959"
+      },
+      {
+        "sujet": "Déplacements, fatigue et vigilance",
+        "animateur": "Direction opérationnelle",
+        "date": "26 avril",
+        "color": "#f59e0b"
+      }
+    ]
+  }
 }
