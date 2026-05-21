@@ -41,6 +41,33 @@ function toInt(value) {
   return parsed === null ? null : Math.round(parsed);
 }
 
+function formatDisplayPercent(value, { signed = false } = {}) {
+  if (value === undefined || value === null || value === '') return '';
+
+  const raw = String(value).trim();
+  if (raw.includes('%')) return raw;
+
+  let parsed = toNumber(raw);
+  if (parsed === null) return raw;
+  if (Math.abs(parsed) <= 1) parsed *= 100;
+
+  const formatted = parsed.toFixed(1).replace('.', ',');
+  const prefix = signed && parsed > 0 ? '+' : '';
+  return `${prefix}${formatted} %`;
+}
+
+function formatOccupationPercent(value) {
+  if (value === undefined || value === null || value === '') return '';
+
+  const raw = String(value).trim();
+  if (raw.includes('%')) return raw;
+
+  let parsed = toNumber(raw);
+  if (parsed === null) return raw;
+  if (Math.abs(parsed) <= 1) parsed *= 100;
+  return `${Math.round(parsed)}%`;
+}
+
 function parseKeyValueSheet(rows) {
   const values = {};
   for (let i = 1; i < rows.length; i += 1) {
@@ -136,14 +163,14 @@ function buildMetrics(kpiRows, anniversairesRows, opportunitesRows, qhseRows) {
     ca_ytd: values.ca_ytd || '',
     ca_objectif: values.ca_objectif || '',
     ca_prog_pct: toNumber(values.ca_prog_pct),
-    ca_trend_pct: values.ca_trend_pct || '',
+    ca_trend_pct: formatDisplayPercent(values.ca_trend_pct, { signed: true }),
     ca_trend_label: values.ca_trend_label || '',
     ca_n1_mensuel: monthly.ca_n1_mensuel,
     ca_n_mensuel: monthly.ca_n_mensuel,
     consultants: toInt(values.consultants),
     sourcing: toInt(values.sourcing),
     fins_de_mission: toInt(values.fins_de_mission),
-    taux_occupation: values.taux_occupation || '',
+    taux_occupation: formatOccupationPercent(values.taux_occupation),
     anniversaires: parseAnniversaires(anniversairesRows),
     opportunites: parseOpportunites(opportunitesRows),
     qhse: parseQhse(qhseRows)
